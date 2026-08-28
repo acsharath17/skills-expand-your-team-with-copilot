@@ -206,7 +206,6 @@ section h3 {
   font-size: 0.7rem;
   font-weight: 600;
   text-decoration: none;
-  color: var(--primary-text);
   transition: opacity 0.2s ease;
 }
 
@@ -216,14 +215,17 @@ section h3 {
 
 .share-x {
   background-color: #111111;
+  color: #ffffff;
 }
 
 .share-whatsapp {
   background-color: #25d366;
+  color: #111111;
 }
 
 .share-email {
   background-color: var(--primary-light);
+  color: #ffffff;
 }
 
 .activity-card-actions {

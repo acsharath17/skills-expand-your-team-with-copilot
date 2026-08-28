@@ -24,6 +24,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const loginForm = document.getElementById("login-form");
   const closeLoginModal = document.querySelector(".close-login-modal");
   const loginMessage = document.getElementById("login-message");
+  const schoolName =
+    document.querySelector("header h1")?.textContent?.trim() ||
+    "Mergington High School";
 
   // Activity categories with corresponding colors
   const activityTypes = {
@@ -304,11 +307,26 @@ document.addEventListener("DOMContentLoaded", () => {
     return details.schedule;
   }
 
+  function escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
   function buildActivityShareLinks(name, formattedSchedule) {
-    const activityUrl = `${window.location.origin}${
-      window.location.pathname
-    }?activity=${encodeURIComponent(name)}`;
-    const shareMessage = `Check out ${name} at Mergington High School Activities. ${formattedSchedule}`;
+    const scheduleDocument = new DOMParser().parseFromString(
+      formattedSchedule,
+      "text/html"
+    );
+    const plainTextSchedule =
+      scheduleDocument.body.textContent?.trim() || formattedSchedule;
+    const shareUrl = new URL(window.location.pathname, window.location.origin);
+    shareUrl.searchParams.set("activity", name);
+    const activityUrl = shareUrl.toString();
+    const shareMessage = `Check out ${name} at ${schoolName} Activities. ${plainTextSchedule}`;
     const encodedShareMessage = encodeURIComponent(shareMessage);
     const encodedActivityUrl = encodeURIComponent(activityUrl);
 
@@ -539,25 +557,31 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
 
     const shareLinks = buildActivityShareLinks(name, formattedSchedule);
+    const safeName = escapeHtml(name);
+    const safeDescription = escapeHtml(details.description);
+    const safeSchedule = escapeHtml(formattedSchedule);
+    const safeXShareLink = escapeHtml(shareLinks.x);
+    const safeWhatsAppShareLink = escapeHtml(shareLinks.whatsapp);
+    const safeEmailShareLink = escapeHtml(shareLinks.email);
 
     activityCard.innerHTML = `
       ${tagHtml}
-      <h4>${name}</h4>
-      <p>${details.description}</p>
+      <h4>${safeName}</h4>
+      <p>${safeDescription}</p>
       <p class="tooltip">
-        <strong>Schedule:</strong> ${formattedSchedule}
+        <strong>Schedule:</strong> ${safeSchedule}
         <span class="tooltip-text">Regular meetings at this time throughout the semester</span>
       </p>
       ${capacityIndicator}
       <div class="social-share" aria-label="Share this activity">
         <span class="social-share-label">Share:</span>
-        <a class="share-button share-x" href="${shareLinks.x}" target="_blank" rel="noopener noreferrer">
+        <a class="share-button share-x" href="${safeXShareLink}" target="_blank" rel="noopener noreferrer" aria-label="Share on X">
           X
         </a>
-        <a class="share-button share-whatsapp" href="${shareLinks.whatsapp}" target="_blank" rel="noopener noreferrer">
+        <a class="share-button share-whatsapp" href="${safeWhatsAppShareLink}" target="_blank" rel="noopener noreferrer" aria-label="Share on WhatsApp">
           WhatsApp
         </a>
-        <a class="share-button share-email" href="${shareLinks.email}">
+        <a class="share-button share-email" href="${safeEmailShareLink}" aria-label="Share by email">
           Email
         </a>
       </div>
@@ -566,13 +590,15 @@ document.addEventListener("DOMContentLoaded", () => {
         <ul>
           ${details.participants
             .map(
-              (email) => `
+              (email) => {
+                const safeEmail = escapeHtml(email);
+                return `
             <li>
-              ${email}
+              ${safeEmail}
               ${
                 currentUser
                   ? `
-                <span class="delete-participant tooltip" data-activity="${name}" data-email="${email}">
+                <span class="delete-participant tooltip" data-activity="${safeName}" data-email="${safeEmail}">
                   ✖
                   <span class="tooltip-text">Unregister this student</span>
                 </span>
@@ -581,6 +607,7 @@ document.addEventListener("DOMContentLoaded", () => {
               }
             </li>
           `
+              }
             )
             .join("")}
         </ul>
@@ -589,7 +616,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ${
           currentUser
             ? `
-          <button class="register-button" data-activity="${name}" ${
+          <button class="register-button" data-activity="${safeName}" ${
                 isFull ? "disabled" : ""
               }>
             ${isFull ? "Activity Full" : "Register Student"}
