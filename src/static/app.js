@@ -71,7 +71,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function initializeTheme() {
     const savedTheme = localStorage.getItem("theme");
-    applyTheme(savedTheme || "light");
+    const systemPrefersDarkMode = window.matchMedia(
+      "(prefers-color-scheme: dark)"
+    ).matches;
+    applyTheme(savedTheme || (systemPrefersDarkMode ? "dark" : "light"));
   }
 
   // Initialize filters from active elements
