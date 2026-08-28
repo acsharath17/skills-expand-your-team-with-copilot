@@ -304,6 +304,25 @@ document.addEventListener("DOMContentLoaded", () => {
     return details.schedule;
   }
 
+  function buildActivityShareLinks(name, formattedSchedule) {
+    const activityUrl = `${window.location.origin}${
+      window.location.pathname
+    }?activity=${encodeURIComponent(name)}`;
+    const shareMessage = `Check out ${name} at Mergington High School Activities. ${formattedSchedule}`;
+    const encodedShareMessage = encodeURIComponent(shareMessage);
+    const encodedActivityUrl = encodeURIComponent(activityUrl);
+
+    return {
+      x: `https://twitter.com/intent/tweet?text=${encodedShareMessage}&url=${encodedActivityUrl}`,
+      whatsapp: `https://wa.me/?text=${encodeURIComponent(
+        `${shareMessage} ${activityUrl}`
+      )}`,
+      email: `mailto:?subject=${encodeURIComponent(
+        `Activity idea: ${name}`
+      )}&body=${encodeURIComponent(`${shareMessage}\n\n${activityUrl}`)}`,
+    };
+  }
+
   // Function to determine activity type (this would ideally come from backend)
   function getActivityType(activityName, description) {
     const name = activityName.toLowerCase();
@@ -519,6 +538,8 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
     `;
 
+    const shareLinks = buildActivityShareLinks(name, formattedSchedule);
+
     activityCard.innerHTML = `
       ${tagHtml}
       <h4>${name}</h4>
@@ -528,6 +549,18 @@ document.addEventListener("DOMContentLoaded", () => {
         <span class="tooltip-text">Regular meetings at this time throughout the semester</span>
       </p>
       ${capacityIndicator}
+      <div class="social-share" aria-label="Share this activity">
+        <span class="social-share-label">Share:</span>
+        <a class="share-button share-x" href="${shareLinks.x}" target="_blank" rel="noopener noreferrer">
+          X
+        </a>
+        <a class="share-button share-whatsapp" href="${shareLinks.whatsapp}" target="_blank" rel="noopener noreferrer">
+          WhatsApp
+        </a>
+        <a class="share-button share-email" href="${shareLinks.email}">
+          Email
+        </a>
+      </div>
       <div class="participants-list">
         <h5>Current Participants:</h5>
         <ul>
