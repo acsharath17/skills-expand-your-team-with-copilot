@@ -44,7 +44,11 @@ def get_activities(
 
     if difficulty:
         if difficulty == "no_difficulty":
-            query["difficulty"] = {"$exists": False}
+            query["$or"] = [
+                {"difficulty": {"$exists": False}},
+                {"difficulty": None},
+                {"difficulty": ""}
+            ]
         else:
             query["difficulty"] = difficulty
     
