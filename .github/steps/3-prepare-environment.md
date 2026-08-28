@@ -88,16 +88,16 @@ For this project, we will pre-install the Python backend dependencies and ensure
 
 1. Ensure you are still on the `prepare-environment` branch.
 
-1. Navigate to the `.github/workflows/` directory.
+1. Navigate to and open the `.github/copilot-setup-steps.yml` file for editing.
 
-1. In the top right, click the **Add file** button and select **Create new file**.
+1. If the file does not exist yet, in the top right, click the **Add file** button and select **Create new file**.
 
    <img width="250" alt="image" src="https://github.com/acsharath17/skills-expand-your-team-with-copilot/blob/main/.github/images/add-file-button.png?raw=true" />
 
 1. Set the file name to:
 
    ```txt
-   copilot-setup-steps.yml
+   .github/copilot-setup-steps.yml
    ```
 
    <img width="650" alt="image" src="https://github.com/acsharath17/skills-expand-your-team-with-copilot/blob/main/.github/images/new-file-name.png?raw=true" />

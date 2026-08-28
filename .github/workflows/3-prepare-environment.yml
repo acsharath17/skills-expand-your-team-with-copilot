@@ -89,14 +89,14 @@ jobs:
             const changedFiles = '${{ steps.changed-files.outputs.all_changed_files }}'.split(' ');
             let message = '';
 
-            if (!changedFiles.includes('.github/workflows/copilot-setup-steps.yml')) {
-              message = 'You need to setup copilot-setup-steps.yml workflow';
+            if (!changedFiles.includes('.github/copilot-setup-steps.yml')) {
+              message = 'You need to update .github/copilot-setup-steps.yml';
               core.setOutput('STEP_MESSAGE', message);
               core.setFailed('The `copilot-setup-steps.yml` file was not modified');
               return;
             }
 
-            message = 'You setup the copilot-setup-steps.yml workflow';
+            message = 'You updated `.github/copilot-setup-steps.yml`';
             core.setOutput('STEP_MESSAGE', message);
 
       - name: Update comment - step results
